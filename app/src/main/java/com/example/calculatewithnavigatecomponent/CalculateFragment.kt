@@ -5,55 +5,98 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.calculatewithnavigatecomponent.databinding.FragmentCalculateBinding
+import net.objecthunter.exp4j.ExpressionBuilder
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CalculateFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CalculateFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding:FragmentCalculateBinding? = null
+    private val bingind get() = _binding!!
+
+    private var input = ""
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_calculate, container, false)
+        _binding = FragmentCalculateBinding.inflate(inflater,container,false)
+
+
+        bingind.topla.setOnClickListener {
+
+        }
+
+        return bingind.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CalculateFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CalculateFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val buttons = listOf(
+            bingind.sifir,
+            bingind.bir,bingind.iki,bingind.uc,
+            bingind.dort,bingind.bes,bingind.alti,
+            bingind.yedi,bingind.sekiz,bingind.dokuz,
+            bingind.topla,bingind.eksi,
+            bingind.carp,bingind.bol,
+            bingind.virgul,
+            bingind.sonuc,
+        )
+
+        buttons.forEach { button ->
+            button.setOnClickListener {
+               val text =button.text.toString()
+                input += text
+                bingind.textView.text  = input
+            }
+        }
+
+        bingind.sonuc.setOnClickListener {
+            try {
+                val expression = ExpressionBuilder(input).build()
+                val result = expression.evaluate()
+                bingind.textView.text = result.toString()
+                input = result.toString() // sonucu yeni giriş olarak kaydet
+            } catch (e: Exception) {
+                bingind.textView.text = "Hata"
+            }
+        }
+
+        bingind.delete.setOnClickListener {
+            input = ""
+            bingind.textView.text = "0"
+        }
+
+        bingind.back.setOnClickListener {
+            if (input.isNotEmpty()) {
+                input = input.dropLast(1)  // Son karakteri sil
+                bingind.textView.text = input
+            }
+        }
+
+
+        bingind.yuzde.setOnClickListener {
+            if (input.isNotEmpty()) {
+                try {
+                    val number = input.toDouble()  // Girilen sayıyı al
+                    val result = number / 100      // Yüzdeyi al
+                    input = result.toString()      // Sonucu input'a ekle
+                    bingind.textView.text = input
+                } catch (e: Exception) {
+                    bingind.textView.text = "Hata"
+                    input = ""
                 }
             }
+        }
+
+    }
+
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

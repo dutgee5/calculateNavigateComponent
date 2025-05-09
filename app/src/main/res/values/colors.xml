@@ -2,4 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+
+    <color name="buttoncolor">#505050</color>
+    <color name="islem">#FF9500</color>
+    <color name="fonks">#D4D4D2</color>
 </resources>
